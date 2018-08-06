@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.RecipeActivity">
+
+    <fragment
+        android:id="@+id/instruction_list_fragment"
+        android:name="com.udacity.bakingapp.fragment.InstructionListFragment"
+        android:layout_width="400dp"
+        android:layout_height="match_parent" />
+
+    <!-- Divider line -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/darker_gray" />
+
+    <fragment
+        android:id="@+id/recipe_step_fragment"
+        android:name="com.udacity.bakingapp.fragment.RecipeStepFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

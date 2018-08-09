@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="GridViewItemSpacing">
+        <item name="android:horizontalSpacing">@dimen/spacing_margin</item>
+        <item name="android:verticalSpacing">@dimen/spacing_margin</item>
+        <item name="android:layout_margin">@dimen/spacing_margin</item>
+    </style>
+
 </resources>

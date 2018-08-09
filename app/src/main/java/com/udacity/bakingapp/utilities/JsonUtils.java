@@ -8,9 +8,6 @@ import com.udacity.bakingapp.model.Recipe;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.stream.Collectors;
-
-import timber.log.Timber;
 
 public class JsonUtils {
 
@@ -39,11 +36,8 @@ public class JsonUtils {
 
     public static String[] getCardNames(Activity activity) {
         Recipe[] recipes = getRecipes(activity);
-        String[] test = Arrays.stream(recipes)
+        return Arrays.stream(recipes)
                 .map(recipe -> recipe.getName())
                 .toArray(String[]::new);
-        Timber.d(Arrays.toString(test));
-//        String[] cardNames = new String[recipes.length];
-        return null;
     }
 }

@@ -9,13 +9,17 @@
         android:roundIcon="@mipmap/baking_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity">
+        <!-- Resource: https://stackoverflow.com/questions/5620033/onconfigurationchanged-not-getting-called -->
+        <activity
+            android:name=".activity.MainActivity"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.RecipeActivity" />
     </application>
 
 </manifest>

@@ -10,12 +10,14 @@ import android.widget.GridView;
 
 import com.udacity.bakingapp.R;
 import com.udacity.bakingapp.adapter.RecipeCardAdapter;
+import com.udacity.bakingapp.model.Recipe;
 import com.udacity.bakingapp.utilities.JsonUtils;
 
 import timber.log.Timber;
 import static timber.log.Timber.DebugTree;
 
 public class MainActivity extends AppCompatActivity {
+    private Recipe[] mRecipes;
     private GridView mGridView;
 
     @Override
@@ -24,8 +26,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Timber.plant(new DebugTree());
 
+        mRecipes = JsonUtils.getRecipes(this);
         mGridView = findViewById(R.id.recipe_card_gridview);
-        final String[] cardNames = JsonUtils.getCardNames(this);
+        final String[] cardNames = JsonUtils.getCardNames(mRecipes);
         final RecipeCardAdapter adapter = new RecipeCardAdapter(this, cardNames);
         mGridView.setAdapter(adapter);
         mGridView.setOnItemClickListener(
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     // NOTE: all activities need to be included in AndroidManifest in order to launch properly
     private void launchRecipeActivity(int position) {
         Intent intent = new Intent(this, RecipeActivity.class);
-        intent.putExtra(RecipeActivity.EXTRA_POSITION, position);
+        intent.putExtra(RecipeActivity.EXTRA_RECIPE, mRecipes[position]);
         startActivity(intent);
     }
 }

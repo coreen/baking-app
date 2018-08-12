@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import com.udacity.bakingapp.R;
 
-import timber.log.Timber;
-
 public class RecipeCardAdapter extends BaseAdapter {
     private Context mContext;
     private String[] mCardNames;
@@ -42,9 +40,7 @@ public class RecipeCardAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (null == convertView) {
             final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-            Timber.d("layoutInflater: " + layoutInflater);
             convertView = layoutInflater.inflate(R.layout.recipe_card_item, null);
-            Timber.d("convertView: " + layoutInflater);
         }
         final TextView mNameText = convertView.findViewById(R.id.tv_recipe_card_name);
         mNameText.setText(mCardNames[position]);

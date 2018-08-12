@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment
+
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/instruction_list_fragment"
-    android:name="com.udacity.bakingapp.fragment.InstructionListFragment"
+    android:id="@+id/instruction_list_placeholder"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />

@@ -27,17 +27,22 @@ public class JsonUtils {
         return json;
     }
 
-    private static Recipe[] getRecipes(Activity activity) {
+    public static Recipe[] getRecipes(Activity activity) {
         String json = loadJSONFromAsset(activity);
         Gson gson = new Gson();
         Recipe[] recipes = gson.fromJson(json, Recipe[].class);
         return recipes;
     }
 
-    public static String[] getCardNames(Activity activity) {
-        Recipe[] recipes = getRecipes(activity);
+    public static String[] getCardNames(Recipe[] recipes) {
         return Arrays.stream(recipes)
                 .map(recipe -> recipe.getName())
+                .toArray(String[]::new);
+    }
+
+    public static String[] getStepShortDescriptions(Recipe.Step[] steps) {
+        return Arrays.stream(steps)
+                .map(step -> step.getShortDescription())
                 .toArray(String[]::new);
     }
 }

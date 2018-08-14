@@ -39,6 +39,12 @@ public class IngredientAdapter extends BaseAdapter {
         return position;
     }
 
+    // Resource: https://stackoverflow.com/questions/16099113/disable-click-event-on-android-listview-items
+    @Override
+    public boolean isEnabled(int position) {
+        return false;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (null == convertView) {

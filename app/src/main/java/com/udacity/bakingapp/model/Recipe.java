@@ -47,8 +47,6 @@ public @Data class Recipe implements Parcelable {
         // Resource: https://stackoverflow.com/questions/10071502/read-writing-arrays-of-parcelable-objects
         ingredients = (Ingredient[]) in.createTypedArray(Ingredient.CREATOR);
         steps = (Step[]) in.createTypedArray(Step.CREATOR);
-//        ingredients = (Ingredient[]) in.readParcelableArray(Ingredient.class.getClassLoader());
-//        steps = (Step[]) in.readParcelableArray(Step.class.getClassLoader());
     }
 
     public static @Data class Ingredient implements Parcelable {

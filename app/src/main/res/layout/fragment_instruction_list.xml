@@ -3,16 +3,48 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <ListView
-        android:id="@+id/ingredients_listview"
+    <!-- Resource: https://developer.android.com/guide/topics/ui/layout/cardview -->
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/spacing_margin"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardBackgroundColor="@color/cardview_light_background">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/spacing_margin">
+
+            <TextView
+                android:id="@+id/tv_title_ingredients"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="22dp"
+                android:text="@string/title_ingredients" />
+
+            <ListView
+                android:id="@+id/ingredients_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="32dp"
+                android:dividerHeight="-30dp"
+                card_view:layout_constraintTop_toTopOf="@id/tv_title_ingredients" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
 
     <ListView
         android:id="@+id/steps_listview"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
 </LinearLayout>

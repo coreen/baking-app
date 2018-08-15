@@ -28,6 +28,9 @@ public class RecipeActivity extends AppCompatActivity
         Recipe recipe = getIntent().getParcelableExtra(EXTRA_RECIPE);
         Timber.d("created RecipeActivity for recipe id: " + recipe.getRecipeId());
 
+        // Set title of activity to recipe name
+        setTitle(recipe.getName());
+
         final Bundle instructionBundle = new Bundle();
         instructionBundle.putParcelableArray(
                 InstructionListFragment.EXTRA_INGREDIENTS,

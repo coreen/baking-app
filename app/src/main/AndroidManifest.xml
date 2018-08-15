@@ -20,7 +20,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.RecipeActivity" />
-        <activity android:name=".activity.StepActivity" />
+        <activity
+            android:name=".activity.StepActivity"
+            android:configChanges="orientation|screenSize" />
     </application>
+
+    <!-- Needed for ExoPlayer to play mediaURL -->
+    <uses-permission android:name="android.permission.INTERNET"/>
 
 </manifest>

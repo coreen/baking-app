@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
     // NOTE: all activities need to be included in AndroidManifest in order to launch properly
     private void launchRecipeActivity(int position) {
         Intent intent = new Intent(this, RecipeActivity.class);
-        intent.putExtra(RecipeActivity.EXTRA_RECIPE, mRecipes[position]);
+        final int recipeId = mRecipes[position].getId();
+        intent.putExtra(RecipeActivity.EXTRA_RECIPE_ID, recipeId);
         startActivity(intent);
     }
 }

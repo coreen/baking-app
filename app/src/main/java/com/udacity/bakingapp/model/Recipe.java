@@ -3,14 +3,13 @@ package com.udacity.bakingapp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-
 import lombok.Data;
 
 // TODO use hrisey plugin (Lombok wrapper) so can get @Parceable annotation
 // See https://github.com/mg6maciej/hrisey/wiki/Parcelable
 public @Data class Recipe implements Parcelable {
-    private int recipeId;
+    // Variable names need to match keys in baking.json asset
+    private int id;
     private String name;
     private int servings;
     private Ingredient[] ingredients;
@@ -23,7 +22,7 @@ public @Data class Recipe implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(recipeId);
+        dest.writeInt(id);
         dest.writeString(name);
         dest.writeInt(servings);
         dest.writeTypedArray(ingredients, 0);
@@ -41,7 +40,7 @@ public @Data class Recipe implements Parcelable {
     };
 
     public Recipe(Parcel in) {
-        recipeId = in.readInt();
+        id = in.readInt();
         name = in.readString();
         servings = in.readInt();
         // Resource: https://stackoverflow.com/questions/10071502/read-writing-arrays-of-parcelable-objects

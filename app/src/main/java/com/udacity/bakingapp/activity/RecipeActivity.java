@@ -9,13 +9,17 @@ import com.udacity.bakingapp.R;
 import com.udacity.bakingapp.fragment.InstructionListFragment;
 import com.udacity.bakingapp.fragment.RecipeStepFragment;
 import com.udacity.bakingapp.model.Recipe;
+import com.udacity.bakingapp.utilities.JsonUtils;
+
+import java.util.Arrays;
 
 import timber.log.Timber;
 
 
 public class RecipeActivity extends AppCompatActivity
         implements InstructionListFragment.OnStepClickListener {
-    public static final String EXTRA_RECIPE = "recipe";
+    public static final String EXTRA_RECIPE_ID = "recipeId";
+    public static final int RECIPE_ID_DEFAULT = 0;
 
     // boolean indicating when to show RecipeStepFragment side-by-side on tablet
     private boolean mTwoPane;
@@ -25,8 +29,14 @@ public class RecipeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
 
-        Recipe recipe = getIntent().getParcelableExtra(EXTRA_RECIPE);
-        Timber.d("created RecipeActivity for recipe id: " + recipe.getRecipeId());
+
+        final int recipeId = getIntent().getIntExtra(EXTRA_RECIPE_ID, RECIPE_ID_DEFAULT);
+        Timber.d("created RecipeActivity for recipe id: " + recipeId);
+
+        final Recipe recipe = Arrays.stream(JsonUtils.getRecipes(this))
+                .filter(r -> (r.getId() == recipeId))
+                .findAny()
+                .get();
 
         // Set title of activity to recipe name
         setTitle(recipe.getName());

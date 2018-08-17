@@ -2,4 +2,5 @@
 <resources>
     <dimen name="spacing_margin">5dp</dimen>
     <dimen name="card_textSize">22dp</dimen>
+    <dimen name="widget_header_padding">8dp</dimen>
 </resources>

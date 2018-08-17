@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.udacity.bakingapp">
 
+    <!-- Needed for ExoPlayer to play mediaURL -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/baking_icon"
@@ -9,6 +12,7 @@
         android:roundIcon="@mipmap/baking_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <!-- Resource: https://stackoverflow.com/questions/5620033/onconfigurationchanged-not-getting-called -->
         <activity
             android:name=".activity.MainActivity"
@@ -23,9 +27,21 @@
         <activity
             android:name=".activity.StepActivity"
             android:configChanges="orientation|screenSize" />
-    </application>
 
-    <!-- Needed for ExoPlayer to play mediaURL -->
-    <uses-permission android:name="android.permission.INTERNET"/>
+        <receiver android:name=".IngredientWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ingredient_widget_info" />
+        </receiver>
+        <activity android:name=".WidgetConfigActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+    </application>
 
 </manifest>

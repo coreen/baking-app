@@ -1,4 +1,4 @@
-package com.udacity.bakingapp;
+package com.udacity.bakingapp.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -13,14 +13,22 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 
+import com.udacity.bakingapp.R;
 import com.udacity.bakingapp.activity.RecipeActivity;
 import com.udacity.bakingapp.model.Recipe;
 import com.udacity.bakingapp.utilities.JsonUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import timber.log.Timber;
 
 // Resource: https://www.youtube.com/watch?v=C7IW49jejUY
 public class WidgetConfigActivity extends AppCompatActivity {
+
+    public static String WIDGET_SHARED_PREF = "com.udacity.bakingapp.shared.preferences.widget";
+    public static String WIDGET_KEY_RECIPE_NAME = "com.udacity.bakingapp.shared.preferences.name";
+    public static String WIDGET_KEY_RECIPE_ID = "com.udacity.bakingapp.shared.preferences.recipeid";
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private ListView mWidgetConfigList;
@@ -69,9 +77,6 @@ public class WidgetConfigActivity extends AppCompatActivity {
                 });
     }
 
-    public static String WIDGET_SHARED_PREF = "com.udacity.bakingapp.shared.preferences.widget";
-    public static String WIDGET_RECIPE_ID = "com.udacity.bakingapp.shared.preferences.recipeid";
-
     private void saveRecipeSelection(Recipe recipe) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widget_ingredient);
@@ -82,24 +87,36 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
         Timber.d("Saving widget preferences for recipeId: " + recipe.getId());
 
+        // Initial widget configuration, need to duplicate in IngredientWidget.updateAppWidget
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, 0);
         views.setOnClickPendingIntent(R.id.widget_layout_main, pendingIntent);
         views.setCharSequence(R.id.widget_tv_title, "setText", recipe.getName());
-        // TODO set data in ListView for ingredients
-//        views.setTextViewText();
+        Timber.d("Set widget title to " + recipe.getName());
 
-        appWidgetManager.updateAppWidget(mAppWidgetId, views);
+        Intent listIntent = new Intent(this, WidgetService.class);
+        // Passing ingredients array in directly gives consistent parse error, use Bundle wrapper
+        // Resource: https://stackoverflow.com/questions/13363046/passing-custom-parcelable-object-extra-or-in-arraylist-to-remoteviewsservice-bre
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArray(IngredientWidget.EXTRA_INGREDIENTS, recipe.getIngredients());
+        listIntent.putExtra(IngredientWidget.EXTRA_INGREDIENTS, bundle);
+        views.setRemoteAdapter(R.id.widget_list, listIntent);
+        Timber.d("Set widget list to " + recipe.getIngredients());
 
         // Persist this widget's preferences
         SharedPreferences preferences = getSharedPreferences(WIDGET_SHARED_PREF, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(WIDGET_RECIPE_ID + mAppWidgetId, recipe.getId());
+        editor.putInt(WIDGET_KEY_RECIPE_ID + mAppWidgetId, recipe.getId());
+        editor.putString(WIDGET_KEY_RECIPE_NAME + mAppWidgetId, recipe.getName());
         editor.apply();
+
+        Timber.d("Saved recipe info in sharedPreferences for appWidgetId: " + mAppWidgetId);
 
         // Successful creation
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
         setResult(RESULT_OK, resultValue);
+
+        appWidgetManager.updateAppWidget(mAppWidgetId, views);
         finish();
     }
 }

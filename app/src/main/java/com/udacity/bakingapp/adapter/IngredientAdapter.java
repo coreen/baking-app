@@ -52,47 +52,23 @@ public class IngredientAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.ingredient_item, null);
         }
 
-        final TextView mQuantity = convertView.findViewById(R.id.tv_quantity);
-        final TextView mMeasure = convertView.findViewById(R.id.tv_measure);
-        final TextView mIngredient = convertView.findViewById(R.id.tv_ingredient);
+//        final TextView mQuantity = convertView.findViewById(R.id.tv_quantity);
+//        final TextView mMeasure = convertView.findViewById(R.id.tv_measure);
+//        final TextView mIngredient = convertView.findViewById(R.id.tv_ingredient);
+        final TextView mIngredientItem = convertView.findViewById(R.id.tv_ingredient_item);
 
-        final Ingredient ingredient = mIngredients[position];
-        final double quantity = ingredient.getQuantity();
-        mQuantity.setText(Double.toString(quantity));
-        mIngredient.setText(ingredient.getIngredient());
-        mMeasure.setText(getDisplayTextFromMeasure(ingredient.getMeasure(), quantity));
+//        final Ingredient ingredient = mIngredients[position];
+//        final double quantity = ingredient.getQuantity();
+
+//        final String ingredientItem = Double.toString(quantity) + " " +
+//                getDisplayTextFromMeasure(ingredient.getMeasure(), quantity) + " " +
+//                ingredient.getIngredient();
+        mIngredientItem.setText(Ingredient.getIngredientItem(mIngredients[position]));
+
+//        mQuantity.setText(Double.toString(quantity));
+//        mIngredient.setText(ingredient.getIngredient());
+//        mMeasure.setText(getDisplayTextFromMeasure(ingredient.getMeasure(), quantity));
 
         return convertView;
-    }
-
-    private String getDisplayTextFromMeasure(Measure measure, double amount) {
-        String displayText;
-        switch(measure) {
-            case CUP:
-                displayText = "cup";
-                break;
-            case TBLSP:
-                displayText = "tablespoon";
-                break;
-            case TSP:
-                displayText = "teaspoon";
-                break;
-            case K:
-                displayText = "kilogram";
-                break;
-            case G:
-                displayText = "gram";
-                break;
-            case OZ:
-                displayText = "ounce";
-                break;
-            case UNIT:
-            default:
-                return "";
-        }
-        if (amount > 1) {
-            displayText += "s";
-        }
-        return displayText;
     }
 }

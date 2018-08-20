@@ -81,6 +81,43 @@ public @Data class Recipe implements Parcelable {
             measure = Measure.valueOf(in.readString());
             ingredient = in.readString();
         }
+
+        public static String getIngredientItem(Ingredient ingredient) {
+            return Double.toString(ingredient.getQuantity()) + " " +
+                    getDisplayTextFromMeasure(ingredient.getMeasure(), ingredient.getQuantity()) + " " +
+                    ingredient.getIngredient();
+        }
+
+        private static String getDisplayTextFromMeasure(Measure measure, double amount) {
+            String displayText;
+            switch(measure) {
+                case CUP:
+                    displayText = "cup";
+                    break;
+                case TBLSP:
+                    displayText = "tablespoon";
+                    break;
+                case TSP:
+                    displayText = "teaspoon";
+                    break;
+                case K:
+                    displayText = "kilogram";
+                    break;
+                case G:
+                    displayText = "gram";
+                    break;
+                case OZ:
+                    displayText = "ounce";
+                    break;
+                case UNIT:
+                default:
+                    return "";
+            }
+            if (amount > 1) {
+                displayText += "s";
+            }
+            return displayText;
+        }
     }
 
     public static @Data class Step implements Parcelable {

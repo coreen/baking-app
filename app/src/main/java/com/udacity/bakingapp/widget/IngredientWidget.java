@@ -6,8 +6,10 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.widget.RemoteViews;
 
+import com.google.gson.Gson;
 import com.udacity.bakingapp.R;
 import com.udacity.bakingapp.activity.RecipeActivity;
 import com.udacity.bakingapp.model.Recipe;
@@ -26,38 +28,33 @@ public class IngredientWidget extends AppWidgetProvider {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_ingredient);
 
-        // Create an Intent to launch MainActivity when clicked
-//        Intent intent = new Intent(context, RecipeActivity.class);
-
+        // Grab shared preferences from initial widget config
         SharedPreferences preferences = context.getSharedPreferences(
                 WidgetConfigActivity.WIDGET_SHARED_PREF, Context.MODE_PRIVATE);
-//        TODO grab title and ingredients from preferences to persist on update
-        final int recipeId = preferences.getInt(
-                WidgetConfigActivity.WIDGET_KEY_RECIPE_ID + appWidgetId,
-                1);
-        final String recipeName = preferences.getString(
-                WidgetConfigActivity.WIDGET_KEY_RECIPE_NAME + appWidgetId,
-                "Baking App");
+        final Gson gson = new Gson();
+        final String json = preferences.getString(
+                WidgetConfigActivity.WIDGET_KEY_RECIPE + appWidgetId,
+                "");
+        final Recipe recipe = gson.fromJson(json, Recipe.class);
 
-//        Timber.d("Before setting views");
+        if (recipe != null) {
+            Timber.d("Received recipe from sharedPreferences with id: " + recipe.getId());
 
-        views.setCharSequence(R.id.widget_tv_title, "setText", recipeName);
-        Intent listIntent = new Intent(context, WidgetService.class);
-//        listIntent.putExtra(IngredientWidget.EXTRA_INGREDIENTS, new int[] {1, 2, 3});
-        views.setRemoteAdapter(R.id.widget_list, listIntent);
+            views.setCharSequence(R.id.widget_tv_title, "setText", recipe.getName());
+            Intent listIntent = new Intent(context, WidgetService.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArray(IngredientWidget.EXTRA_INGREDIENTS, recipe.getIngredients());
+            listIntent.putExtra(IngredientWidget.EXTRA_INGREDIENTS, bundle);
+            views.setRemoteAdapter(R.id.widget_list, listIntent);
 
-//        Timber.d("After setting views");
+            // Create an Intent to launch MainActivity when clicked
+            Intent intent = new Intent(context, RecipeActivity.class);
+            intent.putExtra(RecipeActivity.EXTRA_RECIPE, recipe);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
-//        intent.putExtra(RecipeActivity.EXTRA_RECIPE_ID, recipeId);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-//        Timber.d("Launching RecipeActivity with recipeId " + recipeId);
-
-        // Widgets allow click handlers to only launch pending intents
-        // TODO investigate why clicking widget doesn't open RecipeActivity
-//        views.setOnClickPendingIntent(R.id.widget_tv_title, pendingIntent);
-
-//        Timber.d("Setting onClickPendingIntent to widget_tv_title");
+            // Widgets allow click handlers to only launch pending intents
+            views.setOnClickPendingIntent(R.id.widget_tv_title, pendingIntent);
+        }
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

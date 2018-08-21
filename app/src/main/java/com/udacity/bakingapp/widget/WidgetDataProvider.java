@@ -26,8 +26,6 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
         final Parcelable[] parcelables = bundle.getParcelableArray(IngredientWidget.EXTRA_INGREDIENTS);
         this.mIngredients = new Recipe.Ingredient[parcelables.length];
         System.arraycopy(parcelables, 0, mIngredients, 0, parcelables.length);
-//        this.mIngredients = (Recipe.Ingredient[]) bundle
-//                .getParcelableArray(IngredientWidget.EXTRA_INGREDIENTS);
         Timber.d("Found ingredients: " + mIngredients);
     }
 
@@ -61,9 +59,6 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
         final Recipe.Ingredient ingredient = mIngredients[position];
         Timber.d("Getting view for ingredient: " + ingredient);
         view.setTextViewText(R.id.tv_ingredient_item, Recipe.Ingredient.getIngredientItem(ingredient));
-//        view.setDouble(R.id.tv_quantity, "setDouble", ingredient.getQuantity());
-//        view.setTextViewText(R.id.tv_measure, ingredient.getMeasure().toString());
-//        view.setTextViewText(R.id.tv_ingredient, ingredient.getIngredient());
         return view;
     }
 

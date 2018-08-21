@@ -13,13 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 
+import com.google.gson.Gson;
 import com.udacity.bakingapp.R;
 import com.udacity.bakingapp.activity.RecipeActivity;
 import com.udacity.bakingapp.model.Recipe;
 import com.udacity.bakingapp.utilities.JsonUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import timber.log.Timber;
 
@@ -27,8 +25,7 @@ import timber.log.Timber;
 public class WidgetConfigActivity extends AppCompatActivity {
 
     public static String WIDGET_SHARED_PREF = "com.udacity.bakingapp.shared.preferences.widget";
-    public static String WIDGET_KEY_RECIPE_NAME = "com.udacity.bakingapp.shared.preferences.name";
-    public static String WIDGET_KEY_RECIPE_ID = "com.udacity.bakingapp.shared.preferences.recipeid";
+    public static String WIDGET_KEY_RECIPE = "com.udacity.bakingapp.shared.preferences.recipe";
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private ListView mWidgetConfigList;
@@ -37,8 +34,6 @@ public class WidgetConfigActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.widget_config_activity);
-        setResult(RESULT_CANCELED);
-
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -73,6 +68,7 @@ public class WidgetConfigActivity extends AppCompatActivity {
         mWidgetConfigList.setOnItemClickListener(
                 (AdapterView<?> adapterView, View view, int position, long l) -> {
                     // Set the widget contents based on selected recipe
+                    Timber.d("Setup config list, selected recipe: " + recipes[position]);
                     saveRecipeSelection(recipes[position]);
                 });
     }
@@ -83,13 +79,11 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
         // Clicking anywhere on widget will launch the recipe's activity
         Intent intent = new Intent(this, RecipeActivity.class);
-        intent.putExtra(RecipeActivity.EXTRA_RECIPE_ID, recipe.getId());
-
-        Timber.d("Saving widget preferences for recipeId: " + recipe.getId());
+        intent.putExtra(RecipeActivity.EXTRA_RECIPE, recipe);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, 0);
+        views.setOnClickPendingIntent(R.id.widget_tv_title, pendingIntent);
 
         // Initial widget configuration, need to duplicate in IngredientWidget.updateAppWidget
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent, 0);
-        views.setOnClickPendingIntent(R.id.widget_layout_main, pendingIntent);
         views.setCharSequence(R.id.widget_tv_title, "setText", recipe.getName());
         Timber.d("Set widget title to " + recipe.getName());
 
@@ -102,11 +96,12 @@ public class WidgetConfigActivity extends AppCompatActivity {
         views.setRemoteAdapter(R.id.widget_list, listIntent);
         Timber.d("Set widget list to " + recipe.getIngredients());
 
-        // Persist this widget's preferences
+        // Persist this widget's preferences, store objects as JSON string
+        // Resource: https://stackoverflow.com/questions/7145606/how-android-sharedpreferences-save-store-object
         SharedPreferences preferences = getSharedPreferences(WIDGET_SHARED_PREF, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(WIDGET_KEY_RECIPE_ID + mAppWidgetId, recipe.getId());
-        editor.putString(WIDGET_KEY_RECIPE_NAME + mAppWidgetId, recipe.getName());
+        Gson gson = new Gson();
+        editor.putString(WIDGET_KEY_RECIPE + mAppWidgetId, gson.toJson(recipe));
         editor.apply();
 
         Timber.d("Saved recipe info in sharedPreferences for appWidgetId: " + mAppWidgetId);

@@ -39,10 +39,4 @@ public class JsonUtils {
                 .map(recipe -> recipe.getName())
                 .toArray(String[]::new);
     }
-
-    public static String[] getStepShortDescriptions(Recipe.Step[] steps) {
-        return Arrays.stream(steps)
-                .map(step -> step.getShortDescription())
-                .toArray(String[]::new);
-    }
 }

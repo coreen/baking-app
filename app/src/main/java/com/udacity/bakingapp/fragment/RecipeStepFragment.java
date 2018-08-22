@@ -45,7 +45,7 @@ public class RecipeStepFragment extends Fragment {
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recipe_step, container);
+        View rootView = inflater.inflate(R.layout.fragment_recipe_step, container, false);
         mPlayerView = rootView.findViewById(R.id.player_view);
         mGuideline = rootView.findViewById(R.id.horizontalHalf);
         mDescription = rootView.findViewById(R.id.tv_description);
@@ -60,6 +60,9 @@ public class RecipeStepFragment extends Fragment {
         final String description = arguments.getString(EXTRA_DESCRIPTION);
         final String mediaURL = arguments.getString(EXTRA_MEDIA_URL);
 
+        // Grab context of the running activity
+        mContext = getActivity();
+
         if (mediaURL.length() > 0) {
             initializePlayer(mediaURL);
         } else {
@@ -67,8 +70,6 @@ public class RecipeStepFragment extends Fragment {
             mGuideline.setVisibility(View.GONE);
         }
         mDescription.setText(description);
-
-        mContext = getContext();
     }
 
     private void initializePlayer(String mediaURL) {
@@ -93,6 +94,12 @@ public class RecipeStepFragment extends Fragment {
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
     }
 
     // TODO figure out when to call this for fragment, if necessary

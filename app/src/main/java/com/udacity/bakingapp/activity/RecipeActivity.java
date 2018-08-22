@@ -9,7 +9,6 @@ import com.udacity.bakingapp.R;
 import com.udacity.bakingapp.fragment.InstructionListFragment;
 import com.udacity.bakingapp.fragment.RecipeStepFragment;
 import com.udacity.bakingapp.model.Recipe;
-import com.udacity.bakingapp.utilities.JsonUtils;
 
 import java.util.Arrays;
 
@@ -50,6 +49,7 @@ public class RecipeActivity extends AppCompatActivity
 
         // mTwoPane detection
         if(findViewById(R.id.recipe_step_placeholder) != null) {
+            Timber.d("Detected tablet in horizontal mode, using 2 panes");
             mTwoPane = true;
             // create fragment
             final RecipeStepFragment recipeStepFragment = new RecipeStepFragment();

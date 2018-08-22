@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     tools:context=".activity.RecipeActivity">
 
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/instruction_list_placeholder"
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="match_parent" />
 
     <!-- Divider line -->
@@ -21,7 +22,7 @@
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/recipe_step_placeholder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

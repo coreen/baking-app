@@ -48,6 +48,19 @@ public @Data class Recipe implements Parcelable {
         steps = (Step[]) in.createTypedArray(Step.CREATOR);
     }
 
+    // For testing only
+    public Recipe(String name, String stepShortDescription) {
+        this.id = 0;
+        this.name = name;
+        this.servings = 8;
+        this.ingredients = new Ingredient[] {
+                new Ingredient()
+        };
+        this.steps = new Step[] {
+                new Step(stepShortDescription)
+        };
+    }
+
     public static @Data class Ingredient implements Parcelable {
         private double quantity;
         private Measure measure;
@@ -80,6 +93,13 @@ public @Data class Recipe implements Parcelable {
             quantity = in.readDouble();
             measure = Measure.valueOf(in.readString());
             ingredient = in.readString();
+        }
+
+        // For testing only
+        public Ingredient() {
+            this.quantity = 1.8;
+            this.measure = Measure.UNIT;
+            this.ingredient = "eggs";
         }
 
         public static String getIngredientItem(Ingredient ingredient) {
@@ -157,6 +177,15 @@ public @Data class Recipe implements Parcelable {
             description = in.readString();
             videoURL = in.readString();
             thumbnailURL = in.readString();
+        }
+
+        // For testing only
+        public Step(String shortDescription) {
+            this.stepId = 1;
+            this.shortDescription = shortDescription;
+            this.description = shortDescription;
+            this.videoURL = "";
+            this.thumbnailURL = "";
         }
     }
 }

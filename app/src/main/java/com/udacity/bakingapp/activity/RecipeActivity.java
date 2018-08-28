@@ -10,8 +10,6 @@ import com.udacity.bakingapp.fragment.InstructionListFragment;
 import com.udacity.bakingapp.fragment.RecipeStepFragment;
 import com.udacity.bakingapp.model.Recipe;
 
-import java.util.Arrays;
-
 import timber.log.Timber;
 
 

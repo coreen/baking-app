@@ -32,12 +32,16 @@ public class RecipeStepFragment extends Fragment {
     public static final String EXTRA_DESCRIPTION = "description";
     public static final String EXTRA_MEDIA_URL = "mediaURL";
 
+    private static final String EXTRA_VIDEO_POSITION = "videoPosition";
+
     private SimpleExoPlayer mExoPlayer;
     private PlayerView mPlayerView;
     private Guideline mGuideline;
     private TextView mDescription;
 
     private Context mContext;
+
+    private long mPlayerPosition;
 
     @Nullable
     @Override
@@ -60,6 +64,12 @@ public class RecipeStepFragment extends Fragment {
         final String description = arguments.getString(EXTRA_DESCRIPTION);
         final String mediaURL = arguments.getString(EXTRA_MEDIA_URL);
 
+        if (savedInstanceState == null) {
+            mPlayerPosition = 0;
+        } else {
+            mPlayerPosition = savedInstanceState.getLong(EXTRA_VIDEO_POSITION);
+        }
+
         // Grab context of the running activity
         mContext = getActivity();
 
@@ -70,6 +80,15 @@ public class RecipeStepFragment extends Fragment {
             mGuideline.setVisibility(View.GONE);
         }
         mDescription.setText(description);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mExoPlayer != null) {
+            mPlayerPosition = mExoPlayer.getCurrentPosition();
+            outState.putLong(EXTRA_VIDEO_POSITION, mPlayerPosition);
+        }
     }
 
     private void initializePlayer(String mediaURL) {
@@ -93,6 +112,23 @@ public class RecipeStepFragment extends Fragment {
                     .createMediaSource(Uri.parse(mediaURL));
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
+            mExoPlayer.seekTo(mPlayerPosition);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Util.SDK_INT > 23) {
+            releasePlayer();
         }
     }
 
@@ -102,9 +138,9 @@ public class RecipeStepFragment extends Fragment {
         releasePlayer();
     }
 
-    // TODO figure out when to call this for fragment, if necessary
     private void releasePlayer() {
         if (mExoPlayer != null) {
+            mPlayerPosition = mExoPlayer.getCurrentPosition();
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;

@@ -10,13 +10,12 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 public class JsonUtils {
-
     private static String loadJSONFromAsset(Activity activity) {
         String json;
         try {
-            InputStream is = activity.getAssets().open("baking.json");
+            final InputStream is = activity.getAssets().open("baking.json");
             final int size = is.available();
-            byte[] buffer = new byte[size];
+            final byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
             json = new String(buffer, "UTF-8");
@@ -28,9 +27,9 @@ public class JsonUtils {
     }
 
     public static Recipe[] getRecipes(Activity activity) {
-        String json = loadJSONFromAsset(activity);
-        Gson gson = new Gson();
-        Recipe[] recipes = gson.fromJson(json, Recipe[].class);
+        final String json = loadJSONFromAsset(activity);
+        final Gson gson = new Gson();
+        final Recipe[] recipes = gson.fromJson(json, Recipe[].class);
         return recipes;
     }
 

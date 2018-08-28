@@ -40,6 +40,7 @@ public class StepActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mPlayerView = findViewById(R.id.player_view);
         final String mediaURL = getIntent().getStringExtra(RecipeStepFragment.EXTRA_MEDIA_URL);
@@ -54,6 +55,12 @@ public class StepActivity extends AppCompatActivity {
         mDescription = findViewById(R.id.tv_description);
         final String description = getIntent().getStringExtra(RecipeStepFragment.EXTRA_DESCRIPTION);
         mDescription.setText(description);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
     private void initializePlayer(String mediaURL) {

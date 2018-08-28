@@ -26,6 +26,7 @@ public class RecipeActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final Recipe recipe = getIntent().getParcelableExtra(EXTRA_RECIPE);
 
@@ -61,6 +62,12 @@ public class RecipeActivity extends AppCompatActivity
         } else {
             mTwoPane = false;
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
     @Override

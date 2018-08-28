@@ -12,4 +12,4 @@ Resources:
 
 ## Screenshots
 
-![widget example](https://github.com/coreen/baking-app/blob/master/Widget_Example.png)
+<img src="Widget_Example.png" alt="widget example" width="270" />

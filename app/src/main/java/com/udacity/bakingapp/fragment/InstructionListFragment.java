@@ -16,7 +16,6 @@ import com.udacity.bakingapp.R;
 import com.udacity.bakingapp.adapter.IngredientAdapter;
 import com.udacity.bakingapp.adapter.StepAdapter;
 import com.udacity.bakingapp.model.Recipe;
-import com.udacity.bakingapp.utilities.JsonUtils;
 
 public class InstructionListFragment
         extends Fragment

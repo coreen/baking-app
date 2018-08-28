@@ -1,10 +1,12 @@
 package com.udacity.bakingapp.fragment;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Guideline;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,11 +30,15 @@ import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Util;
 import com.udacity.bakingapp.R;
 
+import timber.log.Timber;
+
 public class RecipeStepFragment extends Fragment {
     public static final String EXTRA_DESCRIPTION = "description";
     public static final String EXTRA_MEDIA_URL = "mediaURL";
 
     private static final String EXTRA_VIDEO_POSITION = "videoPosition";
+    private static final String EXTRA_VIDEO_WINDOW = "videoWindow";
+    private static final String EXTRA_VIDEO_AUTOPLAY = "videoAutoplay";
 
     private SimpleExoPlayer mExoPlayer;
     private PlayerView mPlayerView;
@@ -42,6 +48,8 @@ public class RecipeStepFragment extends Fragment {
     private Context mContext;
 
     private long mPlayerPosition;
+    private int mPlayerWindow;
+    private boolean mPlayerAutoplay;
 
     @Nullable
     @Override
@@ -53,6 +61,17 @@ public class RecipeStepFragment extends Fragment {
         mPlayerView = rootView.findViewById(R.id.player_view);
         mGuideline = rootView.findViewById(R.id.horizontalHalf);
         mDescription = rootView.findViewById(R.id.tv_description);
+
+        if (savedInstanceState == null) {
+            mPlayerPosition = 0;
+            mPlayerWindow = 0;
+            mPlayerAutoplay = true;
+        } else {
+            mPlayerPosition = savedInstanceState.getLong(EXTRA_VIDEO_POSITION);
+            mPlayerWindow = savedInstanceState.getInt(EXTRA_VIDEO_WINDOW);
+            mPlayerAutoplay = savedInstanceState.getBoolean(EXTRA_VIDEO_AUTOPLAY);
+        }
+
         return rootView;
     }
 
@@ -63,12 +82,6 @@ public class RecipeStepFragment extends Fragment {
 
         final String description = arguments.getString(EXTRA_DESCRIPTION);
         final String mediaURL = arguments.getString(EXTRA_MEDIA_URL);
-
-        if (savedInstanceState == null) {
-            mPlayerPosition = 0;
-        } else {
-            mPlayerPosition = savedInstanceState.getLong(EXTRA_VIDEO_POSITION);
-        }
 
         // Grab context of the running activity
         mContext = getActivity();
@@ -82,12 +95,37 @@ public class RecipeStepFragment extends Fragment {
         mDescription.setText(description);
     }
 
+    // Resource: https://developer.android.com/guide/topics/resources/runtime-changes#HandlingTheChange
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Timber.d("onConfigurationChanged orientation: " + newConfig.orientation);
+
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mPlayerView.getLayoutParams();
+        params.width = params.MATCH_PARENT;
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // set full screen
+            params.height = params.MATCH_PARENT;
+            mDescription.setVisibility(View.INVISIBLE);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // keep original sizing
+            params.height = 800;
+            mDescription.setVisibility(View.VISIBLE);
+        }
+        mPlayerView.setLayoutParams(params);
+    }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mExoPlayer != null) {
             mPlayerPosition = mExoPlayer.getCurrentPosition();
+            mPlayerWindow = mExoPlayer.getCurrentWindowIndex();
+            mPlayerAutoplay = mExoPlayer.getPlayWhenReady();
+
             outState.putLong(EXTRA_VIDEO_POSITION, mPlayerPosition);
+            outState.putInt(EXTRA_VIDEO_WINDOW, mPlayerWindow);
+            outState.putBoolean(EXTRA_VIDEO_AUTOPLAY, mPlayerAutoplay);
         }
     }
 
@@ -111,8 +149,8 @@ public class RecipeStepFragment extends Fragment {
             MediaSource mediaSource = new ExtractorMediaSource.Factory(mediaDataSourceFactory)
                     .createMediaSource(Uri.parse(mediaURL));
             mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
-            mExoPlayer.seekTo(mPlayerPosition);
+            mExoPlayer.setPlayWhenReady(mPlayerAutoplay);
+            mExoPlayer.seekTo(mPlayerWindow, mPlayerPosition);
         }
     }
 
@@ -140,7 +178,11 @@ public class RecipeStepFragment extends Fragment {
 
     private void releasePlayer() {
         if (mExoPlayer != null) {
+            // Persist last known player config
             mPlayerPosition = mExoPlayer.getCurrentPosition();
+            mPlayerWindow = mExoPlayer.getCurrentWindowIndex();
+            mPlayerAutoplay = mExoPlayer.getPlayWhenReady();
+
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;

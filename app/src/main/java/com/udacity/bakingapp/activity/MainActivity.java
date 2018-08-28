@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
                         (AdapterView<?> adapterView, View view, int position, long l)
                                 -> launchRecipeActivity(position));
 
-                // Set initial column number
+                // Set column number, onCreate called every orientation change
+                // if configChanges not set in AndroidManifest
                 Configuration config = getResources().getConfiguration();
                 if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     mGridView.setNumColumns(3);
@@ -65,20 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 Timber.e("Error retrieving recipes from network", t);
             }
         });
-    }
-
-    // Resource: https://developer.android.com/guide/topics/resources/runtime-changes#HandlingTheChange
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        Timber.d("onConfigurationChanged orientation: " + newConfig.orientation);
-
-        // Checks the orientation of the screen and updates column number accordingly
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mGridView.setNumColumns(3);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            mGridView.setNumColumns(2);
-        }
     }
 
     // NOTE: all activities need to be included in AndroidManifest in order to launch properly

@@ -45,6 +45,8 @@ public class RecipeStepFragment extends Fragment {
     private Guideline mGuideline;
     private TextView mDescription;
 
+    private String mediaURL;
+
     private Context mContext;
 
     private long mPlayerPosition;
@@ -81,7 +83,8 @@ public class RecipeStepFragment extends Fragment {
         Bundle arguments = getArguments();
 
         final String description = arguments.getString(EXTRA_DESCRIPTION);
-        final String mediaURL = arguments.getString(EXTRA_MEDIA_URL);
+        // Saved to variable for restoring exoplayer state in onResume
+        mediaURL = arguments.getString(EXTRA_MEDIA_URL);
 
         // Grab context of the running activity
         mContext = getActivity();
@@ -131,6 +134,8 @@ public class RecipeStepFragment extends Fragment {
 
     private void initializePlayer(String mediaURL) {
         if (mExoPlayer == null) {
+            Timber.d("Seting up exoplayer window " + mPlayerWindow +
+                    " at position " + mPlayerPosition + ", autoplay: " + mPlayerAutoplay);
             // Resource: https://gist.github.com/codeshifu/c26bb8a5f27f94d73b3a4888a509927c#file-mainactivity-java-L63
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(
                     new DefaultRenderersFactory(mContext),
@@ -157,17 +162,13 @@ public class RecipeStepFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (Util.SDK_INT <= 23) {
-            releasePlayer();
-        }
+        releasePlayer();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (Util.SDK_INT > 23) {
-            releasePlayer();
-        }
+        releasePlayer();
     }
 
     @Override
@@ -187,5 +188,11 @@ public class RecipeStepFragment extends Fragment {
             mExoPlayer.release();
             mExoPlayer = null;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initializePlayer(mediaURL);
     }
 }

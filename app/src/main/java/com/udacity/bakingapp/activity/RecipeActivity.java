@@ -39,24 +39,33 @@ public class RecipeActivity extends AppCompatActivity
                 InstructionListFragment.EXTRA_STEPS,
                 recipe.getSteps());
 
-        final InstructionListFragment instructionListFragment = new InstructionListFragment();
-        instructionListFragment.setArguments(instructionBundle);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.instruction_list_placeholder, instructionListFragment)
-                .commit();
+        InstructionListFragment instructionListFragment =
+                (InstructionListFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.instruction_list_placeholder);
+        if (instructionListFragment == null) {
+            instructionListFragment = new InstructionListFragment();
+            instructionListFragment.setArguments(instructionBundle);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.instruction_list_placeholder, instructionListFragment)
+                    .commit();
+        }
 
         // mTwoPane detection
         if(findViewById(R.id.recipe_step_placeholder) != null) {
             Timber.d("Detected tablet in horizontal mode, using 2 panes");
             mTwoPane = true;
-            // create fragment
-            final RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
-            recipeStepFragment.setArguments(populateBundleFromStep(recipe.getSteps()[0]));
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.recipe_step_placeholder, recipeStepFragment)
-                    .commit();
+            // create fragment if does not exist
+            RecipeStepFragment recipeStepFragment = (RecipeStepFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.recipe_step_placeholder);
+            if (recipeStepFragment == null) {
+                recipeStepFragment = new RecipeStepFragment();
+                recipeStepFragment.setArguments(populateBundleFromStep(recipe.getSteps()[0]));
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.recipe_step_placeholder, recipeStepFragment)
+                        .commit();
+            }
         } else {
             mTwoPane = false;
         }

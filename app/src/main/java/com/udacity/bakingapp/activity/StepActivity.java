@@ -20,13 +20,17 @@ public class StepActivity extends AppCompatActivity {
         final Bundle arguments = getIntent().getExtras();
         Timber.d("Received bundle in StepActivity: " + arguments);
 
-
-        final RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
-        recipeStepFragment.setArguments(arguments);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.recipe_step_placeholder, recipeStepFragment)
-                .commit();
+        // create fragment if does not exist
+        RecipeStepFragment recipeStepFragment = (RecipeStepFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.recipe_step_placeholder);
+        if (recipeStepFragment == null) {
+            recipeStepFragment = new RecipeStepFragment();
+            recipeStepFragment.setArguments(arguments);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.recipe_step_placeholder, recipeStepFragment)
+                    .commit();
+        }
     }
 
     @Override
